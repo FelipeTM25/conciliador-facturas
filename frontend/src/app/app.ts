@@ -1,12 +1,15 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+
+import { ArchivosConciliacion, CargaArchivos } from './components/carga-archivos/carga-archivos';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [CargaArchivos],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('frontend');
+  protected onProcesar(archivos: ArchivosConciliacion): void {
+    console.log('Archivos seleccionados', archivos);
+  }
 }

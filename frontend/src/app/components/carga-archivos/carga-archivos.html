@@ -1,0 +1,21 @@
+<section class="carga">
+  <h2>Cargar archivos</h2>
+
+  <label class="campo">
+    <span>Facturas (facturas.csv)</span>
+    <input type="file" accept=".csv" (change)="seleccionar($event, 'facturas')" />
+  </label>
+
+  <label class="campo">
+    <span>Contabilidad (contabilidad.csv)</span>
+    <input type="file" accept=".csv" (change)="seleccionar($event, 'contabilidad')" />
+  </label>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <button type="button" [disabled]="!facturas() || !contabilidad()" (click)="enviar()">
+    Procesar
+  </button>
+</section>
