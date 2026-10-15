@@ -1,4 +1,63 @@
 <main class="contenedor">
   <h1>Conciliador de facturas y retenciones</h1>
-  <app-carga-archivos (procesar)="onProcesar($event)" />
+
+  <fieldset [disabled]="cargando()">
+    <app-carga-archivos (procesar)="onProcesar($event)" />
+  </fieldset>
+
+  @if (cargando()) {
+    <p role="status">Procesando archivos...</p>
+  }
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (resultado(); as datos) {
+    <section>
+      <h2>Resumen de conciliación</h2>
+
+      <p>Total de facturas: {{ datos.resumen.total_facturas }}</p>
+      <p>Correctas: {{ datos.resumen.correctas }}</p>
+      <p>Con inconsistencias: {{ datos.resumen.con_inconsistencia }}</p>
+    </section>
+
+    <section>
+      <h2>Detalle de facturas</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fila</th>
+            <th scope="col">Factura</th>
+            <th scope="col">Estado contable</th>
+            <th scope="col">Resultado</th>
+            <th scope="col">Causas</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (factura of datos.detalle; track factura.fila) {
+            <tr>
+              <td>{{ factura.fila }}</td>
+              <td>{{ factura.id_factura }}</td>
+              <td>{{ factura.estado_contable ?? 'Sin registro' }}</td>
+              <td>{{ factura.estado }}</td>
+              <td>
+                @if (factura.causas.length > 0) {
+                  <ul>
+                    @for (causa of factura.causas; track $index) {
+                      <li>{{ causa }}</li>
+                    }
+                  </ul>
+                } @else {
+                  Sin inconsistencias
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  }
 </main>
