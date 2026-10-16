@@ -1,63 +1,89 @@
-<main class="contenedor">
-  <h1>Conciliador de facturas y retenciones</h1>
+<header class="encabezado">
+  <div class="contenedor">
+    <h1>Conciliador de facturas y retenciones</h1>
+    <p>Valida IVA, retenciones y totales contra el registro contable.</p>
+  </div>
+</header>
 
+<main class="contenedor">
   <fieldset [disabled]="cargando()">
     <app-carga-archivos (procesar)="onProcesar($event)" />
   </fieldset>
 
   @if (cargando()) {
-    <p role="status">Procesando archivos...</p>
+    <p class="aviso" role="status">Procesando archivos...</p>
   }
 
   @if (error()) {
-    <p class="error" role="alert">{{ error() }}</p>
+    <p class="aviso aviso--error" role="alert">{{ error() }}</p>
   }
 
   @if (resultado(); as datos) {
-    <section>
+    <section class="tarjeta">
       <h2>Resumen de conciliación</h2>
 
-      <p>Total de facturas: {{ datos.resumen.total_facturas }}</p>
-      <p>Correctas: {{ datos.resumen.correctas }}</p>
-      <p>Con inconsistencias: {{ datos.resumen.con_inconsistencia }}</p>
+      <div class="resumen">
+        <div class="indicador">
+          <span class="indicador__valor">{{ datos.resumen.total_facturas }}</span>
+          <span class="indicador__etiqueta">Total de facturas</span>
+        </div>
+        <div class="indicador indicador--ok">
+          <span class="indicador__valor">{{ datos.resumen.correctas }}</span>
+          <span class="indicador__etiqueta">Correctas</span>
+        </div>
+        <div class="indicador indicador--error">
+          <span class="indicador__valor">{{ datos.resumen.con_inconsistencia }}</span>
+          <span class="indicador__etiqueta">Con inconsistencias</span>
+        </div>
+      </div>
     </section>
 
-    <section>
+    <section class="tarjeta">
       <h2>Detalle de facturas</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Fila</th>
-            <th scope="col">Factura</th>
-            <th scope="col">Estado contable</th>
-            <th scope="col">Resultado</th>
-            <th scope="col">Causas</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          @for (factura of datos.detalle; track factura.fila) {
+      <div class="tabla-scroll">
+        <table>
+          <thead>
             <tr>
-              <td>{{ factura.fila }}</td>
-              <td>{{ factura.id_factura }}</td>
-              <td>{{ factura.estado_contable ?? 'Sin registro' }}</td>
-              <td>{{ factura.estado }}</td>
-              <td>
-                @if (factura.causas.length > 0) {
-                  <ul>
-                    @for (causa of factura.causas; track $index) {
-                      <li>{{ causa }}</li>
-                    }
-                  </ul>
-                } @else {
-                  Sin inconsistencias
-                }
-              </td>
+              <th scope="col">Fila</th>
+              <th scope="col">Factura</th>
+              <th scope="col">Estado contable</th>
+              <th scope="col">Resultado</th>
+              <th scope="col">Causas</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            @for (factura of datos.detalle; track factura.fila) {
+              <tr>
+                <td>{{ factura.fila }}</td>
+                <td>{{ factura.id_factura }}</td>
+                <td>{{ factura.estado_contable ?? 'Sin registro' }}</td>
+                <td>
+                  <span
+                    class="estado"
+                    [class.estado--ok]="factura.estado === 'Correcta'"
+                    [class.estado--error]="factura.estado !== 'Correcta'"
+                  >
+                    {{ factura.estado }}
+                  </span>
+                </td>
+                <td>
+                  @if (factura.causas.length > 0) {
+                    <ul>
+                      @for (causa of factura.causas; track $index) {
+                        <li>{{ causa }}</li>
+                      }
+                    </ul>
+                  } @else {
+                    <span class="sin-causas">Sin inconsistencias</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </section>
   }
 </main>
