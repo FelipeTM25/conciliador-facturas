@@ -99,6 +99,46 @@ fieldset {
   }
 }
 
+.detalle-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+
+  h2 {
+    margin-bottom: 0;
+  }
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtro {
+  padding: 6px 14px;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--negro);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    border-color: var(--amarillo);
+  }
+
+  &--activo {
+    background: var(--amarillo);
+    border-color: var(--amarillo);
+    font-weight: 600;
+  }
+}
+
 .tabla-scroll {
   overflow-x: auto;
 }

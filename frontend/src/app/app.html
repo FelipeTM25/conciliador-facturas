@@ -39,7 +39,23 @@
     </section>
 
     <section class="tarjeta">
-      <h2>Detalle de facturas</h2>
+      <div class="detalle-encabezado">
+        <h2>Detalle de facturas</h2>
+
+        <div class="filtros" role="group" aria-label="Filtrar por estado">
+          @for (opcion of filtros; track opcion) {
+            <button
+              type="button"
+              class="filtro"
+              [class.filtro--activo]="filtro() === opcion"
+              [attr.aria-pressed]="filtro() === opcion"
+              (click)="filtro.set(opcion)"
+            >
+              {{ opcion }}
+            </button>
+          }
+        </div>
+      </div>
 
       <div class="tabla-scroll">
         <table>
@@ -54,7 +70,7 @@
           </thead>
 
           <tbody>
-            @for (factura of datos.detalle; track factura.fila) {
+            @for (factura of facturasFiltradas(); track factura.fila) {
               <tr>
                 <td>{{ factura.fila }}</td>
                 <td>{{ factura.id_factura }}</td>
@@ -79,6 +95,10 @@
                     <span class="sin-causas">Sin inconsistencias</span>
                   }
                 </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="sin-causas">No hay facturas con este estado.</td>
               </tr>
             }
           </tbody>
